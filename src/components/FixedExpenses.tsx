@@ -1,5 +1,6 @@
-import { UnorderedList, ListItem } from "@chakra-ui/react";
+import { UnorderedList, ListItem, HStack } from "@chakra-ui/react";
 import { Expenses, currencyFormat } from "../App";
+import "./FixedExpenses.css";
 
 interface Props {
   fixedExpensesList: Expenses[];
@@ -7,11 +8,13 @@ interface Props {
 
 const FixedExpensesList = ({ fixedExpensesList }: Props) => {
   return (
-    <UnorderedList>
+    <UnorderedList className="expensesList">
       {fixedExpensesList.map((expense) => (
-        <ListItem paddingRight={20} key={expense.id}>
-          {expense.name} {currencyFormat(expense.amount)}
-        </ListItem>
+        <HStack key={expense.id} className="expensesList">
+          <ListItem key={expense.id}>
+            {expense.name} {currencyFormat(expense.amount)}
+          </ListItem>
+        </HStack>
       ))}
     </UnorderedList>
   );

@@ -5,11 +5,10 @@ import {
   Input,
   HStack,
   Button,
-  NumberInput,
-  NumberInputField,
   Text,
   Box,
   Stack,
+  Heading,
 } from "@chakra-ui/react";
 
 export interface Expenses {
@@ -28,7 +27,11 @@ export const currencyFormat = (amount: number) => {
 };
 
 function App() {
-  const [fixedExpensesList, setFixedExpensesList] = useState<Expenses[]>([]);
+  const [fixedExpensesList, setFixedExpensesList] = useState<Expenses[]>([
+    { id: 0, name: "item item item item item", amount: 2 },
+    { id: 1, name: "item 2", amount: 2 },
+  ]);
+  const [buttonDisabled, setButtonDisabled] = useState(true);
 
   const inputFixedExpenseName = useRef<HTMLInputElement>(null);
   const inputFixedExpenseAmount = useRef<HTMLInputElement>(null);
@@ -56,18 +59,50 @@ function App() {
     );
   };
 
+  const fieldsEmpty = () => {
+    if (
+      inputFixedExpenseName.current!.value === "" ||
+      inputFixedExpenseAmount.current!.value === "0"
+    ) {
+      setButtonDisabled(true);
+    } else {
+      setButtonDisabled(false);
+    }
+  };
+
   return (
     <VStack>
       <Text>{fixedExpensesTotal()}</Text>
       <HStack>
-        <Input ref={inputFixedExpenseName}></Input>
-        <NumberInput>
-          <NumberInputField ref={inputFixedExpenseAmount} />
-        </NumberInput>
-        <Button onClick={addExpense}>Add</Button>
+        <Input
+          type="text"
+          autoFocus
+          width="auto"
+          ref={inputFixedExpenseName}
+          onChange={fieldsEmpty}
+        />
+        <Input
+          type="number"
+          width="auto"
+          ref={inputFixedExpenseAmount}
+          onChange={fieldsEmpty}
+        />
+        <Button
+          isDisabled={buttonDisabled}
+          onClick={(e) => {
+            addExpense();
+            inputFixedExpenseName.current!.value = "";
+            inputFixedExpenseName.current!.focus();
+            inputFixedExpenseAmount.current!.value = "0";
+            fieldsEmpty();
+          }}
+        >
+          Add
+        </Button>
       </HStack>
       <Stack direction={["column", "row"]} spacing="24px">
         <Box w="100%" h="100%" bg="yellow">
+          <Heading>Fixed Expenses</Heading>
           <FixedExpensesList fixedExpensesList={fixedExpensesList} />
         </Box>
       </Stack>
